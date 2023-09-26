@@ -4,9 +4,12 @@ import usersRouter from '~/routes/users.routes'
 import databaseService from '~/services/database.services'
 import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
+import { config } from 'dotenv'
 databaseService.connect()
+
+config()
 const app = express()
-const port = 4000
+const port = process.env.PORT || 4000
 
 // Tạo folder upload
 initFolder()
