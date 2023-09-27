@@ -15,7 +15,8 @@ import {
   followController,
   unfollowController,
   changePasswordController,
-  oauthController
+  oauthController,
+  refreshTokenController
 } from '~/controllers/users.controllers'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
@@ -38,6 +39,14 @@ import { wrapRequestHandler } from '~/utils/handlers'
 const usersRouter = Router()
 
 /**
+ * Description. Register a new user
+ * Path: /register
+ * Method: POST
+ * Body: { name: string, email: string, password: string, confirm_password: string, date_of_birth: ISO8601 }
+ */
+usersRouter.post('/register', registerValidator, wrapRequestHandler(registerController))
+
+/**
  * Description. Login a user
  * Path: /login
  * Method: POST
@@ -47,12 +56,12 @@ const usersRouter = Router()
 usersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 /**
- * Description. Register a new user
- * Path: /register
+ * Description. Refresh Token
+ * Path: /refresh-token
  * Method: POST
- * Body: { name: string, email: string, password: string, confirm_password: string, date_of_birth: ISO8601 }
+ * Body: { refresh_token: string }
  */
-usersRouter.post('/register', registerValidator, wrapRequestHandler(registerController))
+usersRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(refreshTokenController))
 
 /**
  * Description. Logout a user
