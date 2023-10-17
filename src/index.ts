@@ -10,6 +10,7 @@ import staticRouter from './routes/static.routes'
 databaseService.connect()
 import cors from 'cors'
 import { MongoClient } from 'mongodb'
+import tweetsRouter from '~/routes/tweets.routes'
 
 config()
 databaseService.connect().then(() => {
@@ -28,6 +29,8 @@ initFolder()
 app.use(express.json())
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
+app.use('/tweets', tweetsRouter)
+
 app.use('/static', staticRouter)
 // app.use('/static', express.static(UPLOAD_IMAGE_DIR))
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
