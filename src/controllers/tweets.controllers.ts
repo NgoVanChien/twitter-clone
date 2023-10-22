@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import { TweetType } from '~/constants/enums'
 import { TWEETS_MESSAGES } from '~/constants/messages'
 import { TweetRequestBody } from '~/models/requests/Tweet.requests'
 import { TokenPayload } from '~/models/requests/User.requests'
@@ -25,5 +26,26 @@ export const getTweetController = async (req: Request, res: Response) => {
   return res.json({
     message: 'Get Tweet Successfully',
     result: tweet
+  })
+}
+export const getTweetChildrenController = async (req: Request, res: Response) => {
+  const tweet_type = Number(req.query.tweet_type as string) as TweetType
+  const limit = Number(req.query.limit as string)
+  const page = Number(req.query.page as string)
+  const { total, tweets } = await tweetsService.getTweetChildren({
+    tweet_id: req.params.tweet_id,
+    tweet_type,
+    limit,
+    page
+  })
+  return res.json({
+    message: 'Get Tweet Children Successfully',
+    result: {
+      tweets,
+      tweet_type,
+      limit,
+      page,
+      total_page: Math.ceil(total / limit)
+    }
   })
 }
