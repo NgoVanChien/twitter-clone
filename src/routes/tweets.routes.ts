@@ -32,8 +32,6 @@ tweetsRouter.post(
   wrapRequestHandler(createTweetController)
 )
 
-export default tweetsRouter
-
 /**
  * Description: Get Tweet detail
  * Path: /:tweet_id
@@ -81,3 +79,5 @@ tweetsRouter.get(
   verifiedUserValidator,
   wrapRequestHandler(getNewFeedsController)
 )
+
+export default tweetsRouter
