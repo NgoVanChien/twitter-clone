@@ -1,3 +1,4 @@
+import { getNewFeedsController } from './../controllers/tweets.controllers'
 import { MongoClient, Db, Collection } from 'mongodb'
 import { config } from 'dotenv'
 import User from '~/models/schemas/User.schema'
@@ -69,6 +70,13 @@ class DatabaseService {
     const exists = await this.followers.indexExists(['user_id_1_followed_user_id_1'])
     if (!exists) {
       this.followers.createIndex({ user_id: 1, followed_user_id: 1 })
+    }
+  }
+
+  async indexTweets() {
+    const exists = await this.tweets.indexExists(['content_text'])
+    if (!exists) {
+      this.tweets.createIndex({ content: 'text' }, { default_language: 'none' })
     }
   }
 
