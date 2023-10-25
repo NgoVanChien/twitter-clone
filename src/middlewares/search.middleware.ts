@@ -1,5 +1,6 @@
 import { checkSchema } from 'express-validator'
 import { MediaTypeQuery, PeopleFollow } from '~/constants/enums'
+import { TWEETS_MESSAGES } from '~/constants/messages'
 import { validate } from '~/utils/validation'
 
 export const searchValidator = validate(
@@ -7,7 +8,7 @@ export const searchValidator = validate(
     {
       content: {
         isString: {
-          errorMessage: 'Content must be string'
+          errorMessage: TWEETS_MESSAGES.CONTENT_MUST_BE_EMPTY_STRING
         }
       },
       media_type: {
@@ -15,13 +16,13 @@ export const searchValidator = validate(
         isIn: {
           options: [Object.values(MediaTypeQuery)]
         },
-        errorMessage: `Media type must be one of ${Object.values(MediaTypeQuery).join(', ')}`
+        errorMessage: TWEETS_MESSAGES.MEDIA_TYPE_INVALID
       },
       people_follow: {
         optional: true,
         isIn: {
           options: [Object.values(PeopleFollow)],
-          errorMessage: 'People follow must be 0 or 1'
+          errorMessage: TWEETS_MESSAGES.PEOPLE_FOLLOW_INVALID
         }
       }
     },

@@ -78,7 +78,14 @@ export const TWEETS_MESSAGES = {
   CREATE_TWEET_SUCCESSFULLY: 'Create tweet successfully',
   INVALID_TWEET_ID: 'Invalid tweet id',
   TWEET_NOT_FOUND: 'Tweet not found',
-  TWEET_IS_NOT_PUBLIC: 'Tweet is not public'
+  TWEET_IS_NOT_PUBLIC: 'Tweet is not public',
+  GET_TWEEET_SUCCESSFULLY: 'Get Tweet Successfully',
+  GET_TWEEET_CHILDREN_SUCCESSFULLY: 'Get Tweet Children Successfully',
+  GET_NEW_FEEDS_SUCCESSFULLY: 'Get New Feeds Successfully',
+  CONTENT_MUST_BE_STRINNG: 'Content must be string',
+  MEDIA_TYPE_INVALID: 'Media type must be 0 or 1',
+  PEOPLE_FOLLOW_INVALID: 'People follow must be 0 or 1',
+  SEARCH_SUCCESSFULLY: 'Search Successfully'
 } as const
 
 export const BOOKMARK_MESSAGES = {

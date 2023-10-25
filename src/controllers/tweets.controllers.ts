@@ -25,7 +25,7 @@ export const getTweetController = async (req: Request, res: Response) => {
     updated_at: result.updated_at
   }
   return res.json({
-    message: 'Get Tweet Successfully',
+    message: TWEETS_MESSAGES.GET_TWEEET_SUCCESSFULLY,
     result: tweet
   })
 }
@@ -43,7 +43,7 @@ export const getTweetChildrenController = async (req: Request<TweetParam, any, a
     user_id
   })
   return res.json({
-    message: 'Get Tweet Children Successfully',
+    message: TWEETS_MESSAGES.GET_TWEEET_CHILDREN_SUCCESSFULLY,
     result: {
       tweets,
       tweet_type,
@@ -65,7 +65,7 @@ export const getNewFeedsController = async (req: Request<ParamsDictionary, any, 
   })
 
   return res.json({
-    message: 'Get New Feeds Successfully',
+    message: TWEETS_MESSAGES.GET_NEW_FEEDS_SUCCESSFULLY,
     result: {
       tweets: result.tweets,
       limit,
