@@ -1,3 +1,4 @@
+import { S3 } from '@aws-sdk/client-s3'
 import express from 'express'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import usersRouter from '~/routes/users.routes'
@@ -14,7 +15,7 @@ import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouter from './routes/bookmarks.routes'
 import likesRouter from './routes/likes.routes'
 import searchRouter from './routes/search.routes'
-
+import './utils/s3'
 config()
 databaseService.connect().then(() => {
   databaseService.indexUsers()
