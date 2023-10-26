@@ -80,7 +80,7 @@ export const sendVerifyRegisterEmail = (
       .replace('{{title}}', 'Please verify your email')
       .replace('{{content}}', 'Click the button below to verify your email')
       .replace('{{titleLink}}', 'Verify')
-      .replace('{{link}}', `${process.env.CLIENT_URL}/verify-email?token=${email_verify_token}`)
+      .replace('{{link}}', `${process.env.CLIENT_URL}/email-verifications?token=${email_verify_token}`)
   )
 }
 
