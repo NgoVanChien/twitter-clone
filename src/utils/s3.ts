@@ -11,14 +11,12 @@ const s3 = new S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID as string
   }
 })
+
 // s3.listBuckets({}).then((data) => console.log(data))
-
-// D:\Projects\twitter-clone\uploads\images\landmark81.jpg
-
 const file = fs.readFileSync(path.resolve('uploads/images/landmark81.jpg'))
 const parallelUploads3 = new Upload({
   client: s3,
-  params: { Bucket: 'twitter-clone-ap-southeast-1', Key: 'landmark.jpg', Body: file, ContentType: 'image/jpeg' },
+  params: { Bucket: 'twitter-clone-ap-southests-1', Key: 'landmark.jpg', Body: file, ContentType: 'image/jpeg' },
   tags: [
     /*...*/
   ], // optional tags
