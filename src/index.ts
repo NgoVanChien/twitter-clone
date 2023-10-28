@@ -58,6 +58,13 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(`user ${socket.id} disconnected`)
   })
+
+  // send a message to the client
+  socket.emit('hello', 'This is message was sent from the Server')
+  // receive a message from the client
+  socket.on('hi', (arg) => {
+    console.log(arg)
+  })
 })
 
 httpServer.listen(port, () => {
