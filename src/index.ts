@@ -1,20 +1,17 @@
-import { S3 } from '@aws-sdk/client-s3'
+import { config } from 'dotenv'
 import express from 'express'
+import { UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
+import mediasRouter from '~/routes/medias.routes'
+import staticRouter from '~/routes/static.routes'
 import usersRouter from '~/routes/users.routes'
 import databaseService from '~/services/database.services'
-import mediasRouter from './routes/medias.routes'
-import { initFolder } from './utils/file'
-import { config } from 'dotenv'
-import { UPLOAD_VIDEO_DIR } from './constants/dir'
-import staticRouter from './routes/static.routes'
-databaseService.connect()
+import { initFolder } from '~/utils/file'
 import cors from 'cors'
-import { MongoClient } from 'mongodb'
 import tweetsRouter from '~/routes/tweets.routes'
-import bookmarksRouter from './routes/bookmarks.routes'
-import likesRouter from './routes/likes.routes'
-import searchRouter from './routes/search.routes'
+import bookmarksRouter from '~/routes/bookmarks.routes'
+import likesRouter from '~/routes/likes.routes'
+import searchRouter from '~/routes/search.routes'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 
@@ -33,7 +30,6 @@ const port = process.env.PORT || 4000
 
 // Tạo folder upload
 initFolder()
-
 app.use(express.json())
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
@@ -42,7 +38,6 @@ app.use('/bookmarks', bookmarksRouter)
 app.use('/likes', likesRouter)
 app.use('/search', searchRouter)
 app.use('/static', staticRouter)
-// app.use('/static', express.static(UPLOAD_IMAGE_DIR))
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 
 app.use(defaultErrorHandler)
@@ -52,18 +47,29 @@ const io = new Server(httpServer, {
     origin: 'http://localhost:3000'
   }
 })
-
+const users: {
+  [key: string]: {
+    socket_id: string
+  }
+} = {}
 io.on('connection', (socket) => {
   console.log(`user ${socket.id} connected`)
-  socket.on('disconnect', () => {
-    console.log(`user ${socket.id} disconnected`)
+  const user_id = socket.handshake.auth._id
+  users[user_id] = {
+    socket_id: socket.id
+  }
+  console.log(users)
+  socket.on('private message', (data) => {
+    const receiver_socket_id = users[data.to].socket_id
+    socket.to(receiver_socket_id).emit('receive private message', {
+      content: data.content,
+      from: user_id
+    })
   })
-
-  // send a message to the client
-  socket.emit('hello', 'This is message was sent from the Server')
-  // receive a message from the client
-  socket.on('hi', (arg) => {
-    console.log(arg)
+  socket.on('disconnect', () => {
+    delete users[user_id]
+    console.log(`user ${socket.id} disconnected`)
+    console.log(users)
   })
 })
 
