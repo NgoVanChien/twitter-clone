@@ -21,7 +21,6 @@ import {
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   accessTokenValidator,
-  verifyEmailTokenValidator,
   forgotPasswordValidator,
   loginValidator,
   refreshTokenValidator,
@@ -32,7 +31,8 @@ import {
   updateMeValidator,
   followValidator,
   unfollowValidator,
-  changePasswordValidator
+  changePasswordValidator,
+  emailVerifyTokenValidator
 } from '~/middlewares/users.middlewares'
 import { UpdateMeReqBody } from '~/models/requests/User.requests'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -78,7 +78,7 @@ usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapReq
  * Method: POST
  * Body: { email_verify_token: string }
  */
-usersRouter.post('/verify-email', verifyEmailTokenValidator, wrapRequestHandler(verifyEmailController))
+usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(verifyEmailController))
 
 /**
  * Description. Verify email when user client click on the link in email

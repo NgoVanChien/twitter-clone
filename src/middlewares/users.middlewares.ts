@@ -1,19 +1,20 @@
 import { Request, Response, NextFunction } from 'express'
-import { ParamSchema, body, checkSchema } from 'express-validator'
+import { ParamSchema, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
-import { capitalize } from 'lodash'
-import { ObjectId } from 'mongodb'
-import { UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
-import { REGEX_USERNAME } from '~/constants/regex'
 import { ErrorWithStatus } from '~/models/Errors'
-import { TokenPayload } from '~/models/requests/User.requests'
 import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
 import { hashPassword } from '~/utils/crypto'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
+import { capitalize } from 'lodash'
+import { ObjectId } from 'mongodb'
+import { TokenPayload } from '~/models/requests/User.requests'
+import { UserVerifyStatus } from '~/constants/enums'
+import { REGEX_USERNAME } from '~/constants/regex'
+import { verifyAccessToken } from '~/utils/commons'
 
 const passwordSchema: ParamSchema = {
   notEmpty: {
@@ -40,6 +41,7 @@ const passwordSchema: ParamSchema = {
     errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_STRONG
   }
 }
+
 const confirmPasswordSchema: ParamSchema = {
   notEmpty: {
     errorMessage: USERS_MESSAGES.CONFIRM_PASSWORD_IS_REQUIRED
@@ -117,7 +119,6 @@ const forgotPasswordTokenSchema: ParamSchema = {
     }
   }
 }
-
 const nameSchema: ParamSchema = {
   notEmpty: {
     errorMessage: USERS_MESSAGES.NAME_IS_REQUIRED
@@ -180,7 +181,6 @@ const userIdSchema: ParamSchema = {
     }
   }
 }
-
 export const loginValidator = validate(
   checkSchema(
     {
@@ -203,7 +203,31 @@ export const loginValidator = validate(
           }
         }
       },
-      password: passwordSchema
+      password: {
+        notEmpty: {
+          errorMessage: USERS_MESSAGES.PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_A_STRING
+        },
+        isLength: {
+          options: {
+            min: 6,
+            max: 50
+          },
+          errorMessage: USERS_MESSAGES.PASSWORD_LENGTH_MUST_BE_FROM_6_TO_50
+        },
+        isStrongPassword: {
+          options: {
+            minLength: 6,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1
+          },
+          errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_STRONG
+        }
+      }
     },
     ['body']
   )
@@ -243,26 +267,7 @@ export const accessTokenValidator = validate(
         custom: {
           options: async (value: string, { req }) => {
             const access_token = (value || '').split(' ')[1]
-            // console.log('access_token', access_token)
-            if (!access_token) {
-              throw new ErrorWithStatus({
-                message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
-                status: HTTP_STATUS.UNAUTHORIZED
-              })
-            }
-            try {
-              const decoded_authorization = await verifyToken({
-                token: access_token,
-                secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
-              })
-              ;(req as Request).decoded_authorization = decoded_authorization
-            } catch (error) {
-              throw new ErrorWithStatus({
-                message: capitalize((error as JsonWebTokenError).message),
-                status: HTTP_STATUS.UNAUTHORIZED
-              })
-            }
-            return true
+            return await verifyAccessToken(access_token, req as Request)
           }
         }
       }
@@ -314,7 +319,7 @@ export const refreshTokenValidator = validate(
   )
 )
 
-export const verifyEmailTokenValidator = validate(
+export const emailVerifyTokenValidator = validate(
   checkSchema(
     {
       email_verify_token: {
@@ -408,7 +413,6 @@ export const verifiedUserValidator = (req: Request, res: Response, next: NextFun
   }
   next()
 }
-
 export const updateMeValidator = validate(
   checkSchema(
     {
@@ -469,7 +473,6 @@ export const updateMeValidator = validate(
           errorMessage: USERS_MESSAGES.USERNAME_MUST_BE_STRING
         },
         trim: true,
-
         custom: {
           options: async (value: string, { req }) => {
             if (!REGEX_USERNAME.test(value)) {
@@ -500,19 +503,19 @@ export const followValidator = validate(
   )
 )
 
-export const unfollowValidator = validate(
+export const getConversationsValidator = validate(
   checkSchema(
     {
-      user_id: userIdSchema
+      receiver_id: userIdSchema
     },
     ['params']
   )
 )
 
-export const getConversationsValidator = validate(
+export const unfollowValidator = validate(
   checkSchema(
     {
-      receiver_id: userIdSchema
+      user_id: userIdSchema
     },
     ['params']
   )
@@ -543,8 +546,8 @@ export const changePasswordValidator = validate(
         }
       }
     },
-    password: passwordSchema,
-    confirm_password: confirmPasswordSchema
+    new_password: passwordSchema,
+    confirm_new_password: confirmPasswordSchema
   })
 )
 
