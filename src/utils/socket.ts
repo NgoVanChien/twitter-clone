@@ -83,6 +83,9 @@ const initSocket = (httpServer: ServerHttp) => {
       })
       const result = await databaseService.conversations.insertOne(conversation)
       conversation._id = result.insertedId
+      socket.emit('send_message_success', {
+        payload: conversation
+      })
       if (receiver_socket_id) {
         socket.to(receiver_socket_id).emit('receive_message', {
           payload: conversation
