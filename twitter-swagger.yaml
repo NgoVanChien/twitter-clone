@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  title: Twitter  Clone - OpenAPI 3.0
+  description: |-
+    This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
+    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
+    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
+    _If you're looking for the Swagger 2.0/OAS 2.0 version of Petstore, then click [here](https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml). Alternatively, you can load via the `Edit > Load Petstore OAS 2.0` menu option!_
+    Some useful links:
+    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
+    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:4000
+tags:
+  - name: users
+    description: Các API liên quan đến người dùng twitter
+paths:
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Đăng nhập
+      description: Đăng nhập vào hệ thống x clone
+      operationId: login
+      requestBody:
+        description: Thông tin đăng nhập
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginBody'
+        required: true
+      responses:
+        '200':
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login success
+                  result:
+                    $ref: '#/components/schemas/SuccessAuthentication'
+        '422':
+          description: Invalid input
+  /users/me:
+    get:
+      tags:
+        - users
+      summary: Lấy thông tin user
+      description: Lấy thông tin user
+      operationId: getMe
+      security:
+        - BearerAuth: []
+      responses:
+        default:
+          description: Lấy thông tin user thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+components:
+  schemas:
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+          example: chienngo03568@gmail.com
+        password:
+          type: string
+          example: Otis0/
+    SuccessAuthentication:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjUzOTQ0NWQ4Njc5NjA2NGI5Y2U3Mjg5IiwidG9rZW5fdHlwZSI6MCwidmVyaWZ5IjoxLCJpYXQiOjE2OTg3NDA4NzcsImV4cCI6MTY5ODgyNzI3N30.6mPaIY4nogHpywbx4_NCdPTIDVS1TqBwqnv7PfZF8Vs
+        refresh_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjUzOTQ0NWQ4Njc5NjA2NGI5Y2U3Mjg5IiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTg3NDA4NzgsImV4cCI6MTcwNzM4MDg3OH0.DSKQ9s4yCAqyXmHZbxF2t3JEp3LlMHoWQ9R7OmeZj_U
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: johndoe@example.com
+        date_of_birth:
+          type: string
+          format: ISO8601
+          example: 2023-06-08T10:17:31.096Z
+        created_at:
+          type: string
+          format: ISO8601
+          example: 2023-03-08T12:00:00Z
+        updated_at:
+          type: string
+          format: ISO8601
+          example: 2023-03-08T12:00:00Z
+        verify:
+          $ref: '#/components/schemas/UserVerifyStatus'
+        twitter_circle:
+          type: array
+          items:
+            type: string
+            format: MongoId
+          example: ['64be0ad2e43d2464394feedb', '64be0ad2e43d2464394feedc']
+        bio:
+          type: string
+          example: 'This is my bio.'
+        location:
+          type: string
+          example: 'San Francisco, CA'
+        website:
+          type: string
+          example: 'www.example.com'
+        username:
+          type: string
+          example: 'johndoe'
+        avatar:
+          type: string
+          example: 'http:localhost:4000/images/avatars/johndoe.jpg'
+        cover_photo:
+          type: string
+          example: 'http:localhost:4000/images/avatars/johndoe.jpg'
+    UserVerifyStatus:
+      type: number
+      enum: [Unverified, Verified, Banned]
+      example: 1
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

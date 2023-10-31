@@ -39,21 +39,47 @@ import { wrapRequestHandler } from '~/utils/handlers'
 const usersRouter = Router()
 
 /**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     tags:
+ *       - users
+ *     summary: Đăng nhập
+ *     description: Đăng nhập vào hệ thống
+ *     operationId: login
+ *     requestBody:
+ *       description: Thông tin đăng nhập
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginBody'
+ *     responses:
+ *       '200':
+ *         description: Đăng nhập thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login success
+ *                 result:
+ *                   $ref: '#/components/schemas/SuccessAuthentication'
+ *       '422':
+ *         description: Invalid input
+ */
+
+usersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
+
+/**
  * Description. Register a new user
  * Path: /register
  * Method: POST
  * Body: { name: string, email: string, password: string, confirm_password: string, date_of_birth: ISO8601 }
  */
 usersRouter.post('/register', registerValidator, wrapRequestHandler(registerController))
-
-/**
- * Description. Login a user
- * Path: /login
- * Method: POST
- * Body: { email: string, password: string }
- */
-
-usersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 /**
  * Description. Refresh Token
