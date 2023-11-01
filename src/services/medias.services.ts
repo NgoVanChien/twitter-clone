@@ -26,8 +26,6 @@ class Queue {
     this.items.push(item)
     // item = /home/User/Downloads/123/abc.mp4
     const idName = getNameFromFullname(item.split('/').pop() as string)
-    console.log('item', item)
-    console.log('idName', idName)
 
     await databaseService.videoStatus.insertOne(
       new VideoStatus({
@@ -39,78 +37,82 @@ class Queue {
   }
 
   async processEncode() {
+    const slash = (await import('slash')).default
     if (this.encoding) return
     if (this.items.length > 0) {
       this.encoding = true
 
       const videoPath = this.items[0]
-      const idName = getNameFromFullname(videoPath.split('/').pop() as string)
-      await databaseService.videoStatus.updateOne(
-        {
-          name: idName
-        },
-        {
-          $set: {
-            status: EncodingStatus.Processing
-          },
-          $currentDate: {
-            updated_at: true
-          }
-        }
-      )
+      this.items.shift()
+      const idName = path.parse(videoPath).name
       try {
-        await encodeHLSWithMultipleVideoStreams(videoPath)
-        this.items.shift()
-
-        // await fsPromise.unlink(videoPath)
-        const files = getFiles(path.resolve(UPLOAD_VIDEO_DIR, idName))
-        await Promise.all(
-          files.map((filepath) => {
-            // filepath: D:\Projects\twitter-clone\uploads\videos\gFX6udKbfnEnzAwQUO4wq\v0\fileSequence0.ts
-            const filename = 'videos-hls' + filepath.replace(path.resolve(UPLOAD_VIDEO_DIR), '')
-            return uploadFileToS3({
-              filepath,
-              filename,
-              contentType: mime.getType(filepath) as string
-            })
-          })
-        )
-        rimrafSync(path.resolve(UPLOAD_VIDEO_DIR, idName))
         await databaseService.videoStatus.updateOne(
           {
             name: idName
           },
           {
             $set: {
-              status: EncodingStatus.Success
+              status: EncodingStatus.Processing
             },
             $currentDate: {
               updated_at: true
             }
           }
         )
-        console.log(`Encode video ${videoPath} success`)
       } catch (error) {
-        await databaseService.videoStatus
-          .updateOne(
-            {
-              name: idName
-            },
-            {
-              $set: {
-                status: EncodingStatus.Failed
-              },
-              $currentDate: {
-                updated_at: true
-              }
-            }
-          )
-          .catch((err) => {
-            console.error('Update video status error', err)
-          })
-        console.error(`Encode video ${videoPath} error`)
-        console.error(error)
+        console.log('err', error)
       }
+      try {
+        await encodeHLSWithMultipleVideoStreams(videoPath)
+      } catch (error) {
+        console.error(`Encode video ${videoPath} error`)
+      }
+
+      const files = getFiles(path.resolve(UPLOAD_VIDEO_DIR, idName))
+      await Promise.all(
+        files.map((filepath) => {
+          const filename = slash('videos-hls' + filepath.replace(path.resolve(UPLOAD_VIDEO_DIR), ''))
+
+          return uploadFileToS3({
+            filepath,
+            filename,
+            contentType: mime.getType(filepath) as string
+          })
+        })
+      )
+      rimrafSync(path.resolve(UPLOAD_VIDEO_DIR, idName))
+      await databaseService.videoStatus.updateOne(
+        {
+          name: idName
+        },
+        {
+          $set: {
+            status: EncodingStatus.Success
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        }
+      )
+      console.log(`Encode video ${videoPath} success`)
+
+      await databaseService.videoStatus
+        .updateOne(
+          {
+            name: idName
+          },
+          {
+            $set: {
+              status: EncodingStatus.Failed
+            },
+            $currentDate: {
+              updated_at: true
+            }
+          }
+        )
+        .catch((err) => {
+          console.error('Update video status error', err)
+        })
       this.encoding = false
       this.processEncode()
     } else {

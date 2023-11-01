@@ -42,6 +42,7 @@ export const uploadFileToS3 = ({
 }
 
 export const sendFileFromS3 = async (res: Response, filepath: string) => {
+  // console.log(filepath)
   try {
     const data = await s3.getObject({
       Bucket: envConfig.s3BucketName,

@@ -2,7 +2,6 @@ import { Request } from 'express'
 import { File } from 'formidable'
 import fs from 'fs'
 import path from 'path'
-import { nanoid } from 'nanoid'
 import { UPLOAD_IMAGE_TEMP_DIR, UPLOAD_VIDEO_DIR, UPLOAD_VIDEO_TEMP_DIR } from '~/constants/dir'
 
 export const initFolder = () => {
@@ -58,8 +57,8 @@ export const handleUploadVideo = async (req: Request) => {
   // ✅Cách 1: Tạo unique id cho video ngay từ đầu
   // ❌Cách 2: Đợi video upload xong rồi tạo folder, move video vào
 
-  // const nanoId = (await import('nanoid')).nanoid
-  const idName = nanoid()
+  const nanoId = (await import('nanoid')).nanoid
+  const idName = nanoId()
   const folderPath = path.resolve(UPLOAD_VIDEO_DIR, idName)
   fs.mkdirSync(folderPath)
   const form = formidable({

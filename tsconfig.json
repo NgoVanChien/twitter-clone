@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "target": "ES2020",
     "outDir": "dist",
     "esModuleInterop": true,
@@ -13,7 +13,8 @@
     }
   },
   "ts-node": {
-    "require": ["tsconfig-paths/register"]
+    "require": ["tsconfig-paths/register"],
+    "swc": true
   },
   "files": ["src/type.d.ts"],
   "include": ["src/**/*"]
