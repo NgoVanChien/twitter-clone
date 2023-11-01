@@ -17,5 +17,5 @@
     "swc": true
   },
   "files": ["src/type.d.ts"],
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "ecosystem.config.js"]
 }
