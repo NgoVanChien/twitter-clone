@@ -6,7 +6,7 @@ import staticRouter from '~/routes/static.routes'
 import usersRouter from '~/routes/users.routes'
 import databaseService from '~/services/database.services'
 import { initFolder } from '~/utils/file'
-import cors from 'cors'
+import cors, { CorsOptions } from 'cors'
 import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouter from '~/routes/bookmarks.routes'
 import likesRouter from '~/routes/likes.routes'
@@ -19,7 +19,8 @@ import fs from 'fs'
 import path from 'path'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
-import { envConfig } from '~/constants/config'
+import { envConfig, isProduction } from '~/constants/config'
+import helmet from 'helmet'
 const file = fs.readFileSync(path.resolve('twitter-swagger.yaml'), 'utf8')
 const swaggerDocument = YAML.parse(file)
 
@@ -44,7 +45,11 @@ databaseService.connect().then(() => {
 })
 const app = express()
 const httpServer = createServer(app)
-app.use(cors())
+app.use(helmet())
+const corsOptions: CorsOptions = {
+  origin: isProduction ? envConfig.clientUrl : '*'
+}
+app.use(cors(corsOptions))
 const port = envConfig.port || 4000
 
 // Tạo folder upload
