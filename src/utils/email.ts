@@ -11,7 +11,7 @@ const sesClient = new SESClient({
   region: envConfig.awsRegion,
   credentials: {
     secretAccessKey: envConfig.awsSecretAccessKey,
-    accessKeyId: envConfig.awsAccessKeyId as string
+    accessKeyId: envConfig.awsAccessKeyId
   }
 })
 

@@ -9,7 +9,7 @@ const s3 = new S3({
   region: envConfig.awsRegion,
   credentials: {
     secretAccessKey: envConfig.awsSecretAccessKey,
-    accessKeyId: envConfig.awsAccessKeyId as string
+    accessKeyId: envConfig.awsAccessKeyId
   }
 })
 // s3.listBuckets({}).then((data) => console.log(data))
