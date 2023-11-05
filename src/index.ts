@@ -33,7 +33,7 @@ const options: swaggerJsdoc.Options = {
       version: '1.0.0'
     }
   },
-  apis: ['./openapi/*.yaml'] // files containing annotations as above
+  apis: ['./openapi/*.yaml']
 }
 const openapiSpecification = swaggerJsdoc(options)
 
