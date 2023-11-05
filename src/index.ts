@@ -14,16 +14,16 @@ import searchRouter from '~/routes/search.routes'
 import { createServer } from 'http'
 import conversationsRouter from '~/routes/conversations.routes'
 import initSocket from './utils/socket'
-import YAML from 'yaml'
-import fs from 'fs'
-import path from 'path'
+// import YAML from 'yaml'
+// import fs from 'fs'
+// import path from 'path'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
 import { envConfig, isProduction } from '~/constants/config'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
-const file = fs.readFileSync(path.resolve('twitter-swagger.yaml'), 'utf8')
-const swaggerDocument = YAML.parse(file)
+// const file = fs.readFileSync(path.resolve('twitter-swagger.yaml'), 'utf8')
+// const swaggerDocument = YAML.parse(file)
 
 const options: swaggerJsdoc.Options = {
   definition: {
