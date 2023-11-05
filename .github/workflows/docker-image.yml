@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Create env file'
+        run: echo "${{ secrets.TWITTER_CLONE_ENV_PRODUCTION }}" > .env.production
+      - name: Build the Docker image
+        run: docker build --progress=plain -t galvinngo89/twitter:v1 .
+      - name: Log in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Push the Docker image
+        run: docker push galvinngo89/twitter:v1
