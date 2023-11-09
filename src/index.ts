@@ -29,7 +29,7 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'X clone (Twitter API)',
+      title: 'Twitter API ( X Clone ) by Ngo Van Chien',
       version: '1.0.0'
     }
   },
