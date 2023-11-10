@@ -547,8 +547,8 @@ export const changePasswordValidator = validate(
         }
       }
     },
-    new_password: passwordSchema,
-    confirm_new_password: confirmPasswordSchema
+    password: passwordSchema,
+    confirm_password: confirmPasswordSchema
   })
 )
 
