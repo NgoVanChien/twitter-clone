@@ -36,4 +36,4 @@ jobs:
             docker pull galvinngo89/twitter:v1
             docker stop twitter-clone
             docker rm twitter-clone
-            docker run -dp 3000:3000 --name twitter-clone -v ~/twitter-clone/uploads:/app/uploads galvinngo89/twitter:v1
+            docker run -dp 3000:3000 --name twitter-clone --restart unless-stopped -v ~/twitter-clone/uploads:/app/uploads galvinngo89/twitter:v1
