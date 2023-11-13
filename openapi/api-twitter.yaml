@@ -32,42 +32,15 @@ tags:
     description: Các API liên quan đến tweet
   - name: medias
     description: Các API liên quan đến media như upload ảnh, video
-  - name: search
-    description: Các API liên quan đến tìm kiếm tweet
   - name: likes
     description: Các API liên quan đến like tweet
   - name: bookmarks
     description: Các API liên quan đến bookmark tweet
+  - name: search
+    description: Các API liên quan đến tìm kiếm tweet
   - name: conversations
     description: Các API liên quan đến chat
 paths:
-  /users/register:
-    post:
-      tags:
-        - users
-      summary: Đăng ký tài khoản
-      description: Register a new user
-      operationId: register
-      requestBody:
-        description: Thông tin đăng ký
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegisterBody'
-        required: true
-      responses:
-        '200':
-          description: Đăng ký thành công
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Register success
-                  result:
-                    $ref: '#/components/schemas/SuccessAuthentication'
   /users/login:
     post:
       tags:
@@ -133,222 +106,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-
-  /users/logout:
-    post:
-      tags:
-        - users
-      summary: Đăng xuất
-      description: Logout a user
-      operationId: logout
-      security:
-        - BearerAuth: []
-      requestBody:
-        description: Thông tin đăng xuất
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                refresh_token:
-                  type: string
-                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64
-        required: true
-      responses:
-        '200':
-          description: Đăng xuất thành công
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Logout success
-  /users/refresh-token:
-    post:
-      tags:
-        - users
-      summary: Refresh Token
-      description: Refresh Token
-      operationId: refreshToken
-      requestBody:
-        description: Thông tin Refresh Token
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                refresh_token:
-                  type: string
-                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64
-        required: true
-      responses:
-        '200':
-          description: Refresh Token thành công
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Refresh token success
-                  result:
-                    $ref: '#/components/schemas/SuccessAuthentication'
-
-  /users/verify-email:
-    post:
-      tags:
-        - users
-      summary: gửi email xác thực
-      description: Verify email when user client click on the link in email
-      operationId: verify email
-      requestBody:
-        description: Thông tin xác thực email
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email_verify_token:
-                  type: string
-                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64
-      responses:
-        default:
-          description: xác thực email  thành công
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Email verify success
-
-  /users/resend-verify-email:
-    post:
-      tags:
-        - users
-      summary: Gửi lại email xác thực
-      description: Resend email verify email
-      operationId: resendVerifyEmail
-      security:
-        - BearerAuth: []
-      requestBody:
-        description: Thông tin gửi lại email xác thực
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        default:
-          description: Gửi lại email xác thực thành công
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Resend verify email success
-
-  /users/forgot-password:
-    post:
-      tags:
-        - users
-      summary: Quên mật khẩu
-      description: Submit email to reset password, send email to users
-      operationId: forgotPassword
-      requestBody:
-        description: Thông tin quên mật khẩu
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: debruyne@gmail.com
-        required: true
-      responses:
-        '200':
-          description: Nhận được email reset password
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Check email to reset password
-
-  /users/verify-forgot-password:
-    post:
-      tags:
-        - users
-      summary: Xác thực link trong email để reset mật khẩu
-      description: Verify link in email to reset password khẩu
-      operationId: verifyForgotPassword
-      requestBody:
-        description: Thông tin xác thực link trong email để reset mật khẩu
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                forgot_password_token:
-                  type: string
-                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64
-        required: true
-      responses:
-        '200':
-          description: Xác thực link trong email để reset mật khẩu thành công
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Verify forgot password success
-  /users/reset-password:
-    post:
-      tags:
-        - users
-      summary: Reset mật khẩu
-      description: Reset password
-      operationId: resetPassword
-      security:
-        - BearerAuth: []
-      requestBody:
-        description: Thông tin reset mật khẩu
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                forgot_password_token:
-                  type: string
-                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjUwMWM2YmZkNDNiZGUyZjk2YzFkYTU1IiwidG9rZW5fdHlwZSI6MiwiaWF0IjoxNjk0Njg3NTQ5LCJleHAiOjE2OTUyOTIzNDl9.l9Kigx_SiT6nVITUuc--EHL351xmdqWPWT3UFfElbts
-                password:
-                  type: string
-                  example: Otis1/
-                confirm_password:
-                  type: string
-                  example: Otis1/
-        required: true
-      responses:
-        default:
-          description: Reset mật khẩu thành công
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Reset password success
   /users/{username}:
     get:
       tags:
@@ -432,6 +189,184 @@ paths:
                   message:
                     type: string
                     example: Unfollow success
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Đăng ký tài khoản
+      description: Register a new user
+      operationId: register
+      requestBody:
+        description: Thông tin đăng ký
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterBody'
+        required: true
+      responses:
+        '200':
+          description: Đăng ký thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Register success
+                  result:
+                    $ref: '#/components/schemas/SuccessAuthentication'
+  /users/verify-email:
+    post:
+      tags:
+        - users
+      summary: gửi email xác thực
+      description: Verify email when user client click on the link in email
+      operationId: verify email
+      requestBody:
+        description: Thông tin xác thực email
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email_verify_token:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64
+      responses:
+        default:
+          description: xác thực email  thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Email verify success
+  /users/resend-verify-email:
+    post:
+      tags:
+        - users
+      summary: Gửi lại email xác thực
+      description: Resend email verify email
+      operationId: resendVerifyEmail
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin gửi lại email xác thực
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        default:
+          description: Gửi lại email xác thực thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Resend verify email success
+
+  /users/forgot-password:
+    post:
+      tags:
+        - users
+      summary: Quên mật khẩu
+      description: Submit email to reset password, send email to users
+      operationId: forgotPassword
+      requestBody:
+        description: Thông tin quên mật khẩu
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: debruyne@gmail.com
+        required: true
+      responses:
+        '200':
+          description: Nhận được email reset password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Check email to reset password
+  /users/verify-forgot-password:
+    post:
+      tags:
+        - users
+      summary: Xác thực link trong email để reset mật khẩu
+      description: Verify link in email to reset password khẩu
+      operationId: verifyForgotPassword
+      requestBody:
+        description: Thông tin xác thực link trong email để reset mật khẩu
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                forgot_password_token:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64
+        required: true
+      responses:
+        '200':
+          description: Xác thực link trong email để reset mật khẩu thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Verify forgot password success
+  /users/reset-password:
+    post:
+      tags:
+        - users
+      summary: Reset mật khẩu
+      description: Reset password
+      operationId: resetPassword
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin reset mật khẩu
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                forgot_password_token:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjUwMWM2YmZkNDNiZGUyZjk2YzFkYTU1IiwidG9rZW5fdHlwZSI6MiwiaWF0IjoxNjk0Njg3NTQ5LCJleHAiOjE2OTUyOTIzNDl9.l9Kigx_SiT6nVITUuc--EHL351xmdqWPWT3UFfElbts
+                password:
+                  type: string
+                  example: Otis1/
+                confirm_password:
+                  type: string
+                  example: Otis1/
+        required: true
+      responses:
+        default:
+          description: Reset mật khẩu thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Reset password success
+
   /users/change-password:
     put:
       tags:
@@ -469,6 +404,69 @@ paths:
                   message:
                     type: string
                     example: Thay đổi mật khẩu thành công
+  /users/refresh-token:
+    post:
+      tags:
+        - users
+      summary: Refresh Token
+      description: Refresh Token
+      operationId: refreshToken
+      requestBody:
+        description: Thông tin Refresh Token
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64
+        required: true
+      responses:
+        '200':
+          description: Refresh Token thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Refresh token success
+                  result:
+                    $ref: '#/components/schemas/SuccessAuthentication'
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: Đăng xuất
+      description: Logout a user
+      operationId: logout
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin đăng xuất
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64
+        required: true
+      responses:
+        '200':
+          description: Đăng xuất thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout success
+
   /tweets:
     post:
       tags:
@@ -563,7 +561,7 @@ paths:
           schema:
             type: string
             format: MongoId
-            example: 65314dbfcbdbe10bb43d0193
+            example: 65366ad9d83f63020a8d3c26
       responses:
         default:
           description: Get Tweet Successfully
@@ -714,6 +712,39 @@ paths:
                   message:
                     type: string
                     example: Upload video thành công
+                  result:
+                    $ref: '#/components/schemas/Media'
+  /medias/upload-video-hls:
+    post:
+      tags:
+        - medias
+      summary: Upload video hls
+      description: Upload video hls
+      operationId: uploadVideoHls
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin upload video hls, chỉ upload được 1 video
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        default:
+          description: Upload video hls success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Upload video hls thành công
                   result:
                     $ref: '#/components/schemas/Media'
 
@@ -1123,7 +1154,7 @@ components:
     TweetType:
       type: number
       enum: [Tweet, Retweet, Comment, QuoteTweet]
-      example: 1
+      example: 0
     TweetAudience:
       type: number
       enum: [Everyone, TwitterCircle]
@@ -1159,12 +1190,12 @@ components:
           type: string
           format: MongoId
           description: ID của tweet
-          example: 6532b377902d4927349a06bf
+          example: 65366ad9d83f63020a8d3c26
         user_id:
           type: string
           format: MongoId
           description: ID của người dùng tạo tweet
-          example: 6532b377902d4927349a06ba
+          example: 65366ad3d83f63020a8d36ad
         type:
           $ref: '#/components/schemas/TweetType'
         audience:
